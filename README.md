@@ -18,6 +18,4 @@ This paper proposes Deformable DETR with multi-scale deformable attention module
 
 ## Metrics
 
-## Licence 
-
 ## References
