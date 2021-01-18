@@ -1,6 +1,4 @@
-# deformable-DETR
-
-## Deformable DETR: Deformable Transformers for End-to-End Object Detection
+# Deformable DETR: Deformable Transformers for End-to-End Object Detection
 
 
 This repository contains an implementation of the paper : https://arxiv.org/pdf/2010.04159.pdf 
