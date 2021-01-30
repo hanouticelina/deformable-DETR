@@ -1,3 +1,18 @@
+# TODO :
+## Code:
+
+
+
+## Dataset:
+
+1. Extraire COCO light et COCO light light.
+
+2. Créer les classes pour COCO.
+
+
+## Poster:
+
+
 # Deformable DETR: Deformable Transformers for End-to-End Object Detection
 
 
