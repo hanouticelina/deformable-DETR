@@ -1,6 +1,14 @@
 # TODO :
 ## Code:
-
+1. Reentrainer les baselines : DETR & R-CNN sur COCO Light
+2. Entrainement de notre modèle :
+  * Recoder et restructurer les loss.
+  * Recoder MSDeformAttention module.
+  * Recoder/restructurer les couches de l'encoder et du decoder.
+  * Restructurer la partie backbone.
+  * Recoder/Restructurer le Deformable Transformer.
+  * Recoder/ Restructurer la classe Deformable DETR.
+  * Coder le main et la boucle d'apprentissage.
 
 
 ## Dataset:
