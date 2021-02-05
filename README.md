@@ -11,7 +11,7 @@
   * Coder le main et la boucle d'apprentissage.
 
 
-## Dataset:
+## Dataset: size = 58470 images
 
 1. Extraire COCO light et COCO light light.
 
