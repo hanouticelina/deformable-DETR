@@ -13,72 +13,6 @@ from torch.nn.init import xavier_uniform_, constant_
 
 
 
-
-class DeformAttn(nn.Module):
-    def __init__(self,last_feat_height,last_feat_width, C, M=8, K=4, L = 1):
-        """
-     Deformable Attention Module
-        :param C                    emebedding size of the x's
-        :param M                    number of attention heads
-        :param K                    number of sampling points per attention head per feature level
-        :param L                    number of scale
-        :param last_feat_height     smallest feature height
-        :param last_feat_width      smallest feature width
-        """
-        super().__init__()
-        assert C % M == 0 # C divisible par M
-        C_v = C // M # C_v = C//M
-
-        self.C = C
-        self.M = M
-        self.K = K
-        self.L = scales
-        self.scales_hw = [[ last_feat_height * 2**i , last_feat_width * 2**i] for i in range(self.L)]
-
-
-        self.delta_projection = nn.Linear(C, L* M * K * 2) # delta p_q 2 *L* M * K
-        self.Attention_projection = nn.Linear(C, L* M * K) # A_mqk
-        self.W_prim_projection = nn.Linear(C, C ) # W_prim_m va de C -> C_v on divise en hard plus bas
-        self.W_m = nn.Linear(C_v, C)  # W_m
-        self.query_proj = nn.Linear(C, C)
-
-
-    def forward(self,
-                    z_q,
-                    x : torch.Tensor,
-                    p_q: torch.Tensor,
-                    query_mask: torch.Tensor = None,
-                    x_masks: = None,):
-        """
-        :param z_q                         batch , Height, width, C
-        :param p_q                         batch , Height, Width, 2 for every pixel a ref point
-        :param x                           batch , Height ,Width , C the features
-        :param query_mask                  batch, Height, Width, 1
-        :param x_masks                     batch, Height, Width, 1
-        :return features                   Batch, Height, Width, C
-                Attention                  Batch, Height, Width, L, M, K
-        """
-
-        # compute the query z_q
-        z_q = self.query_proj(z_q)
-        # batch, height, width, 2 * M * K (K 2 dimensionnal offsets for every M attention heads for every pixel)
-        offsets = self.delta_projection(z_q)
-        # batch, Height, width, M * K
-        A = self.attention_proj(query) # K probabilities for every M head for every pixel
-
-        if query_mask:
-
-
-from typing import List, Optional
-
-import torch
-import torch.nn.modules as nn
-import torch.nn.functional as F
-
-
-
-
-
 def phi(width: int,height: int,p_q: torch.Tensor):
     new_point = p_q.clone().detach()
     new_point[..., 0] = new_point[..., 0] * (width - 1)
@@ -86,10 +20,20 @@ def phi(width: int,height: int,p_q: torch.Tensor):
 
     return new_point
 
+def generate_ref_points(width: int,
+                        height: int):
+    grid_y, grid_x = torch.meshgrid(torch.arange(0, height), torch.arange(0, width))
+    grid_y = grid_y / (height - 1)
+    grid_x = grid_x / (width - 1)
+
+    grid = torch.stack((grid_x, grid_y), 2).float()
+    grid.requires_grad = False
+    return grid
+
 
 class DeformableHeadAttention(nn.Module):
-        def __init__(self,last_height,last_width, C, M=8, K=4, L = 1, dropout=0.1, return_attentions = False):
-            """
+    def __init__(self,last_height,last_width, C, M=8, K=4, L = 1, dropout=0.1, return_attentions = False):
+        """
          Deformable Attention Module
             :param C                    emebedding size of the x's
             :param M                    number of attention heads
@@ -99,15 +43,15 @@ class DeformableHeadAttention(nn.Module):
             :param last_width           smallest feature width
             :param dropout              dropout ratio default =0.1,
             :param return_attentions    boolean, return attentions or not default = False
-            """
+        """
         super(DeformableHeadAttention, self).__init__()
         assert C % M == 0 # check if C is divisible by M
         self.C_v = C // M
         self.M = M
         self.L = L
-        self.K = k
+        self.K = K
         self.q_proj = nn.Linear(C, C)
-        self.W_prim = nn.Linear(d_model, d_model)
+        self.W_prim = nn.Linear(C, C)
         self.dimensions = [[ last_height * 2**i , last_width * 2**i] for i in range(self.L)]
         self.dropout = None
         if dropout > 0:
@@ -119,7 +63,6 @@ class DeformableHeadAttention(nn.Module):
         self.W_m = nn.Linear(C, C)
         self.return_attentions = True
         self.init_parameters()
-
     def forward(self,z_q,Xs,p_q ,query_mask = None,x_masks = None):
         """
         :param x_masks      batch, Height, Width
@@ -133,7 +76,7 @@ class DeformableHeadAttention(nn.Module):
         """
         #
         if x_masks is None:
-            x_masks = [None] * len(keys)
+            x_masks = [None] * len(Xs)
 
         output = {'attentions': None, 'deltas': None}
 
@@ -178,7 +121,7 @@ class DeformableHeadAttention(nn.Module):
 
         A = A.permute(0, 3, 1, 2, 4).contiguous() # batch, M, H, W, L*K
         A = A.view(B * self.M, H * W, -1) # Batch *M, H*W, LK
-        features = []
+        sampled_features_scale_list = []
         for l in range(self.L):
             x_l = Xs[l] # N H W C
             _, h, w, _ = x_l.shape
@@ -186,12 +129,12 @@ class DeformableHeadAttention(nn.Module):
             x_l_mask = x_masks[l]
 
             # Batch, H, W, 2
-            phi_p_q = phi(height=h, width=w, ref_point=p_q) #phi multiscale
+            phi_p_q = phi(height=h, width=w, p_q=p_q) #phi multiscale
             # B, H, W, 2 -> B*M, H, W, 2
             phi_p_q = phi_p_q.repeat(self.M, 1, 1, 1) # repeat M points for every attention head
             # B, h, w, M, C_v
             W_prim_x = self.W_prim(x_l)
-            W_prim_x = W_prim_x.view(B, h, w, self.h, self.d_k) # Separate the C features into M*C_v vectors
+            W_prim_x = W_prim_x.view(B, h, w, self.M, self.C_v) # Separate the C features into M*C_v vectors
             #shape  batch, h( x_l ), w( x_l ), M, C_v
 
             if x_l_mask is not None: # si un masque est present
@@ -205,7 +148,7 @@ class DeformableHeadAttention(nn.Module):
             # Batch *M, C_v, h, w
             W_prim_x = W_prim_x.view(-1, self.C_v, h, w)
             # B*M, k, C_v, H, W
-            sampled_features = compute_sampling(W_prim_x, phi_p_q, deltas)
+            sampled_features = self.compute_sampling(W_prim_x, phi_p_q, deltas, l, h, w)
 
             sampled_features_scale_list.append(sampled_features)
 
@@ -231,9 +174,9 @@ class DeformableHeadAttention(nn.Module):
         if self.dropout:
             final_features = self.dropout(final_features)
 
-        return feat, output
+        return final_features, output
 
-    def compute_sampling(W_prim_x,phi_p_q, deltas, layer):
+    def compute_sampling(self, W_prim_x,phi_p_q, deltas, layer, h, w):
         offseted_features = []
         for k in range(self.K): # for K points
             phi_p_q_plus_deltas = phi_p_q + deltas[:, layer, k, :, :, :] # p_q + delta p_mqk
@@ -249,7 +192,7 @@ class DeformableHeadAttention(nn.Module):
         return torch.stack(offseted_features, dim=3)
 
     def init_parameters(self):
-        torch.nn.init.constant_(self.delta_projection.weight, 0.0)
+        torch.nn.init.constant_(self.delta_proj.weight, 0.0)
         torch.nn.init.constant_(self.Attention_projection.weight, 0.0)
 
         torch.nn.init.constant_(self.Attention_projection.bias, 1 / (self.L * self.K))
@@ -259,7 +202,7 @@ class DeformableHeadAttention(nn.Module):
             torch.nn.init.constant_(bias[:, 1], float(y))
 
         # caution: offset layout will be  M, L, K, 2
-        bias = self.delta_projection.bias.view(self.M, self.L, self.K, 2)
+        bias = self.delta_proj.bias.view(self.M, self.L, self.K, 2)
 
         init_xy(bias[0], x=-self.K, y=-self.K)
         init_xy(bias[1], x=-self.K, y=0)
