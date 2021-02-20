@@ -32,17 +32,18 @@ def generate_ref_points(width: int,
 
 
 class DeformableHeadAttention(nn.Module):
+    """Deformable Attention Module"""
     def __init__(self,last_height,last_width, C, M=8, K=4, L = 1, dropout=0.1, return_attentions = False):
         """
-         Deformable Attention Module
-            :param C                    emebedding size of the x's
-            :param M                    number of attention heads
-            :param K                    number of sampling points per attention head per feature level
-            :param L                    number of scale
-            :param last_height          smallest feature height
-            :param last_width           smallest feature width
-            :param dropout              dropout ratio default =0.1,
-            :param return_attentions    boolean, return attentions or not default = False
+        Args:
+            - param C: emebedding size of the x's
+            - param M: number of attention heads
+            - param K: number of sampling points per attention head per feature level
+            - param L: number of scale
+            - param last_height: smallest feature height
+            - param last_width: smallest feature width
+            - param dropout: dropout ratio default =0.1,
+            - param return_attentions: boolean, return attentions or not default = False
         """
         super(DeformableHeadAttention, self).__init__()
         assert C % M == 0 # check if C is divisible by M
@@ -65,12 +66,13 @@ class DeformableHeadAttention(nn.Module):
         self.init_parameters()
     def forward(self,z_q,Xs,p_q ,query_mask = None,x_masks = None):
         """
-        :param x_masks      batch, Height, Width
-        :param query_mask:  batch, H, W
-        :param z_q:         batch, H, W, C, query tensors
-        :param Xs:          List[batch, H, W, C] list of tensors representing multiscal image
-        :param p_q:         reference point 1 per pixel B, H, W, 2
-        :return features                   Batch, Height, Width , C
+        Args:
+        - param x_masks: batch, Height, Width
+        - param query_mask: batch, H, W
+        - param z_q: batch, H, W, C, query tensors
+        - param Xs: List[batch, H, W, C] list of tensors representing multiscal image
+        - param p_q: reference point 1 per pixel B, H, W, 2
+        - return features                   Batch, Height, Width , C
                 Attention                  Batch, Height, Width, L, M, K
 
         """

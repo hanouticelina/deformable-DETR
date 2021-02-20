@@ -1,22 +1,10 @@
-# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-import unittest
-
 import torch
-
-
 from util import box_ops
 from util.misc import nested_tensor_from_tensor_list
 from models.MultiHeadAttention import DeformableHeadAttention, generate_ref_points
 import pdb
 
 def test_deformable_attn():
-        """defomable_attn = DeformableHeadAttention(h=8,
-                                                 d_model=256,
-                                                 k=4,
-                                                 last_feat_width=16,
-                                                 last_feat_height=16,
-                                                 scales=4,
-                                                 need_attn=True)"""
         defomable_attn = DeformableHeadAttention(last_height = 16,last_width = 16, C=256, M=8, K=4, L = 1, dropout=0.1, return_attentions = True)
         defomable_attn = defomable_attn.cuda()
         w = 16
