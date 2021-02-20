@@ -31,25 +31,6 @@ class CocoDetection(TvCocoDetection):
         if self._transforms is not None:
             img, target = self._transforms(img, target)
         return img, target
-
-
-def convert_coco_poly_to_mask(segmentations, height, width):
-    masks = []
-    for polygons in segmentations:
-        rles = coco_mask.frPyObjects(polygons, height, width)
-        mask = coco_mask.decode(rles)
-        if len(mask.shape) < 3:
-            mask = mask[..., None]
-        mask = torch.as_tensor(mask, dtype=torch.uint8)
-        mask = mask.any(dim=2)
-        masks.append(mask)
-    if masks:
-        masks = torch.stack(masks, dim=0)
-    else:
-        masks = torch.zeros((0, height, width), dtype=torch.uint8)
-    return masks
-
-
 class ConvertCocoPolysToMask(object):
     def __init__(self, return_masks=False):
         self.return_masks = return_masks
@@ -114,7 +95,6 @@ class ConvertCocoPolysToMask(object):
 
         return image, target
 
-
 def make_coco_transforms(image_set):
 
     normalize = T.Compose([
@@ -152,5 +132,5 @@ def build(image_set, args):
         "val": (f"/tempory/coco/images/val2017/",f"/users/Etu0/3523540/deformable-DETR/datasets/coco_light/coco_light_validation.json" ),
     }
     img_folder, ann_file = PATHS[image_set]
-    dataset = CocoDetection(img_folder, ann_file, transforms=make_coco_transforms(image_set), return_masks=args.masks,local_rank=get_local_rank(), local_size=get_local_size())
+    dataset = CocoDetection(img_folder, ann_file, transforms=make_coco_transforms(image_set), return_masks=False,local_rank=get_local_rank(), local_size=get_local_size())
     return dataset
