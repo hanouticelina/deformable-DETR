@@ -101,7 +101,6 @@ class FocalLoss(nn.Module):
             else:
                 return loss.sum()
 
-# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 class SetCriterion(nn.Module):
     """ This class computes the loss for DETR.
     The process happens in two steps:
