@@ -115,11 +115,6 @@ class DeformableDETR(nn.Module):
                 for a, b in zip(outputs_class[:-1], outputs_coord[:-1])]
         return out
 
-# ------------------------------------------------------------------------
-# Modified from DETR (https://github.com/facebookresearch/detr)
-# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-# ------------------------------------------------------------------------
-
 class PostProcess(nn.Module):
     """ This module converts the model's output into the format expected by the coco api"""
 
