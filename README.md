@@ -29,6 +29,8 @@ The command for training Deformable DETR on a single GPU GeForce RTX 2080 is as 
 
 ### Evaluation
 
+To evaluate Deformable DETR on a subset of COCO 2017 validation set with a single GPU run:
+
 `python main.py --resume <path to pre-trained model> --eval`
 
 
