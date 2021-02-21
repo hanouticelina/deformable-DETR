@@ -1,24 +1,4 @@
-# TODO :
-## Code:
-1. Reentrainer les baselines : DETR & R-CNN sur COCO Light
-2. Entrainement de notre modèle :
-  * Recoder et restructurer les loss.
-  * Recoder MSDeformAttention module.
-  * Recoder/restructurer les couches de l'encoder et du decoder.
-  * Restructurer la partie backbone.
-  * Recoder/Restructurer le Deformable Transformer.
-  * Recoder/ Restructurer la classe Deformable DETR.
-  * Coder le main et la boucle d'apprentissage.
 
-
-## Dataset: size = 58470 images
-
-1. Extraire COCO light et COCO light light.
-
-2. Créer les classes pour COCO.
-
-
-## Poster:
 
 
 # Deformable DETR: Deformable Transformers for End-to-End Object Detection
@@ -29,10 +9,24 @@ This repository contains an implementation of the paper "Deformable Transformers
 
 ## Requirements
 
+`pip install -r requirements.txt`
+
 ## Usage 
 
-## Data 
+### Training
 
-## Metrics
+
+
+### Evaluation
+
+
+
+## Dataset 
+
+
+
+## Results
+
+
 
 ## References
