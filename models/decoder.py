@@ -118,14 +118,8 @@ class DeformableTransformerDecoder(nn.Module):
         self.return_intermediate = return_intermediate
         self.norm = norm
         
-    def forward(self, query_objects, out_encoder,
-                ref_point,
-                tgt_mask = None,
-                memory_masks = None,
-                tgt_key_padding_mask = None,
-                memory_key_padding_masks = None,
-                positional_embeddings = None,
-                query_pos = None):
+    def forward(self, query_objects, out_encoder, ref_point, tgt_mask = None, memory_masks = None,
+                tgt_key_padding_mask = None, memory_key_padding_masks = None, positional_embeddings = None, query_pos = None):
         
         # input of the decoder layers
         output = query_objects
