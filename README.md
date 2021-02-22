@@ -44,9 +44,7 @@ We provide scratch implementation of the following modules :
 
 the remaining modules are mainly copied from the original DETR implementation : https://github.com/facebookresearch/detr
 
-## Results
-
-We compared our model to state of the art object detectors pre-trained on COCO 2017 train set and fine-tuned on the subset on which our model was trained. The results are depicted on the table below. 
+Pre-trained model can be found at : https://www.dropbox.com/s/vnkbfrui1ldwtah/checkpoint.pth?dl=0
 
 
 ## References
