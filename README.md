@@ -12,7 +12,7 @@ This repository contains an implementation of the paper "Deformable Transformers
 `pip install -r requirements.txt`
 
 ## Dataset
-
+The `coco_extraction.py` script provides functions for creating an annotation file for coco with only the specified class indexes. It removes all images and bounding boxes not containning at least one of those classes. We kept only five randomly sampled classes from 91 available, `bear`, `bus`, `tie`, `toilet` and `vase`. The annotation files are `datasets/coco_light/coco_light_train.json` for the train set and `datasets/coco_light/coco_light_train.json` for the validation set. `Coco lignt` contains ~ 15K images in the train set and 656 images on the validation set.
 
 
 ## Usage 
