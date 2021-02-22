@@ -125,8 +125,8 @@ def make_coco_transforms(image_set):
 
 def build(image_set, args):
     PATHS = {
-        "train": (f"/tempory/coco/images/train2017/", f"coco_light/coco_light_train.json"),
-        "val": (f"/tempory/coco/images/val2017/",f"coco_light/coco_light_validation.json" ),
+        "train": (f"/tempory/coco/images/train2017/", f"datasets/coco_light/coco_light_train.json"),
+        "val": (f"/tempory/coco/images/val2017/",f"datasets/coco_light/coco_light_validation.json" ),
     }
     img_folder, ann_file = PATHS[image_set]
     dataset = CocoDetection(img_folder, ann_file, transforms=make_coco_transforms(image_set), return_masks=False,local_rank=get_local_rank(), local_size=get_local_size())
