@@ -2,9 +2,9 @@
 
 set -x
 
-EXP_DIR=exps/r50_deformable_detr
+EXP_DIR=exps/r50_deformable_detr_subset_coco
 PY_ARGS=${@:1}
 
-python -u main.py \
+python3 -u main.py \
     --output_dir ${EXP_DIR} \
     ${PY_ARGS}
