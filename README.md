@@ -35,6 +35,7 @@ To evaluate Deformable DETR on a subset of COCO 2017 validation set with a singl
 
 `<path to config file> --resume <path to pre-trained model> --eval`
 
+Pre-trained model can be found at : https://www.dropbox.com/s/vnkbfrui1ldwtah/checkpoint.pth?dl=0
 
 ### Additional information
 
@@ -44,7 +45,6 @@ We provide scratch implementation of the following modules :
 
 the remaining modules are mainly copied from the original DETR implementation : https://github.com/facebookresearch/detr
 
-Pre-trained model can be found at : https://www.dropbox.com/s/vnkbfrui1ldwtah/checkpoint.pth?dl=0
 
 
 ## References
