@@ -3,8 +3,17 @@
 
 # Deformable DETR: Deformable Transformers for End-to-End Object Detection
 
+**Hakim Chekirou*, Celina Hanouti* & Aymen Merrouche* **
+
+***Equal Contribution**
 
 This repository contains an implementation of the paper "Deformable Transformers for End-to-End Object Detection" : https://arxiv.org/pdf/2010.04159.pdf 
+
+We provide scratch implementation of the following modules : 
+
+* `deformable_transformer.py`, `decoder.py`, `encoder.py`, `deformable_detr.py` and `MultiHeadAttention.py`.
+
+the remaining modules are mainly copied from the original DETR implementation : https://github.com/facebookresearch/detr
 
 
 ## Requirements
@@ -36,15 +45,6 @@ To evaluate Deformable DETR on a subset of COCO 2017 validation set with a singl
 `<path to config file> --resume <path to pre-trained model> --eval`
 
 Pre-trained model can be found at : https://www.dropbox.com/s/vnkbfrui1ldwtah/checkpoint.pth?dl=0
-
-### Additional information
-
-We provide scratch implementation of the following modules : 
-
-* `deformable_transformer.py`, `decoder.py`, `encoder.py`, `deformable_detr.py` and `MultiHeadAttention.py`.
-
-the remaining modules are mainly copied from the original DETR implementation : https://github.com/facebookresearch/detr
-
 
 
 ## References
