@@ -3,9 +3,8 @@
 
 # Deformable DETR: Deformable Transformers for End-to-End Object Detection
 
-**Hakim Chekirou*, Celina Hanouti* & Aymen Merrouche* **
+**Hakim Chekirou, Celina Hanouti & Aymen Merrouche (Equal Contribution) **
 
-***Equal Contribution**
 
 This repository contains an implementation of the paper "Deformable Transformers for End-to-End Object Detection" : https://arxiv.org/pdf/2010.04159.pdf 
 
